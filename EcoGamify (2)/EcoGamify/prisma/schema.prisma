@@ -1,0 +1,49 @@
+// Prisma schema for EcoGamify
+// You can switch provider to 'postgresql' if preferred
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id")
+  name      String?
+  email     String?  @unique
+  image     String?
+  ecoPoints Int      @default(0)
+  badges    String[]
+  role      String   @default("student")
+  createdAt DateTime @default(now())
+}
+
+model NGO {
+  id        String   @id @default(auto()) @map("_id")
+  name      String
+  description String
+  email     String?
+  website   String?
+  impactStories ImpactStory[]
+  createdAt DateTime @default(now())
+}
+
+model ImpactStory {
+  id        String   @id @default(auto()) @map("_id")
+  title     String
+  content   String
+  ngo       NGO?     @relation(fields: [ngoId], references: [id])
+  ngoId     String?
+  createdAt DateTime @default(now())
+}
+
+model Metric {
+  id        String   @id @default(auto()) @map("_id")
+  type      String
+  value     Float
+  unit      String
+  createdAt DateTime @default(now())
+}
